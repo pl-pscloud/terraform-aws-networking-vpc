@@ -1,7 +1,5 @@
-variable "env" {}
-variable "company" {}
-variable "region" {}
-variable "az" {}
-
-variable "vpc_cidr_block" {}
+variable "pscloud_env" {}
+variable "pscloud_company" {}
+variable "pscloud_az" {}
+variable "pscloud_cidr_block" {}
 
