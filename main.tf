@@ -60,26 +60,62 @@ resource "aws_subnet" "pscloud-public" {
   }
 }
 
-resource "aws_db_subnet_group" "pslouc-rds-subnet-group" {
-  name = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
+resource "aws_subnet" "pscloud-private-ext" {
+  count                   = length(var.pscloud_private_subnets)
+  vpc_id                  = aws_vpc.pslcoud-vpc.id
+  availability_zone       = var.pscloud_private_subnets[count.index].az
+  cidr_block              = var.pscloud_private_subnets[count.index].ip
+
+  tags = {
+    Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}"
+  }
+}
+
+resource "aws_subnet" "pscloud-public-ext" {
+  count                   = length(var.pscloud_public_subnets)
+  vpc_id                  = aws_vpc.pslcoud-vpc.id
+  availability_zone       = var.pscloud_public_subnets[count.index].az
+  cidr_block              = var.pscloud_public_subnets[count.index].ip
+
+  tags = {
+    Name = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}"
+  }
+}
+
+
+resource "aws_db_subnet_group" "pscloud-rds-subnet-group" {
+  count                   = length(var.pscloud_az) > 0 ? 1 : 0
+  name                    = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
   subnet_ids = [
     for as in aws_subnet.pscloud-private :
     as.id
   ]
 
   tags = {
-    Name = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
+    Name                  = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
   }
 }
 
 resource "aws_route_table_association" "assoc-public" {
-  count          = length(aws_subnet.pscloud-public)
-  subnet_id      = element(aws_subnet.pscloud-public, count.index).id
-  route_table_id = aws_route_table.pscloud-rt-public.id
+  count                   = length(aws_subnet.pscloud-public)
+  subnet_id               = element(aws_subnet.pscloud-public, count.index).id
+  route_table_id          = aws_route_table.pscloud-rt-public.id
 }
 
 resource "aws_route_table_association" "assoc-private" {
-  count          = length(aws_subnet.pscloud-private)
-  subnet_id      = element(aws_subnet.pscloud-private, count.index).id
-  route_table_id = aws_route_table.pscloud-rt-private.id
+  count                   = length(aws_subnet.pscloud-private)
+  subnet_id               = element(aws_subnet.pscloud-private, count.index).id
+  route_table_id          = aws_route_table.pscloud-rt-private.id
+}
+
+resource "aws_route_table_association" "assoc-public-ext" {
+  count                   = length(aws_subnet.pscloud-public-ext)
+  subnet_id               = element(aws_subnet.pscloud-public-ext, count.index).id
+  route_table_id          = aws_route_table.pscloud-rt-public.id
+}
+
+resource "aws_route_table_association" "assoc-private-ext" {
+  count                   = length(aws_subnet.pscloud-private-ext)
+  subnet_id               = element(aws_subnet.pscloud-private-ext, count.index).id
+  route_table_id          = aws_route_table.pscloud-rt-private.id
 }
