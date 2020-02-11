@@ -112,10 +112,14 @@ resource "aws_route_table_association" "assoc-public-ext" {
   count                   = length(aws_subnet.pscloud-public-ext)
   subnet_id               = element(aws_subnet.pscloud-public-ext, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-public.id
+
+  depends_on = [aws_subnet.pscloud-public-ext]
 }
 
 resource "aws_route_table_association" "assoc-private-ext" {
   count                   = length(aws_subnet.pscloud-private-ext)
   subnet_id               = element(aws_subnet.pscloud-private-ext, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-private.id
+
+  depends_on = [aws_subnet.pscloud-private-ext]
 }
