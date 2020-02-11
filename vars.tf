@@ -7,14 +7,14 @@ variable "pscloud_cidr_block" {}
 variable "pscloud_az" { default = [] }
 
 //if custom
-variable "pscloud_private_subnets" {
+variable "pscloud_private_ext_subnets" {
   type = list(object({
     az      = string
     ip      = string
   }))
 }
 
-variable "pscloud_public_subnets" {
+variable "pscloud_public_ext_subnets" {
   type = list(object({
     az      = string
     ip      = string

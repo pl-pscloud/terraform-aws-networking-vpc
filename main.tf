@@ -61,10 +61,10 @@ resource "aws_subnet" "pscloud-public" {
 }
 
 resource "aws_subnet" "pscloud-private-ext" {
-  count                   = length(var.pscloud_private_subnets)
+  count                   = length(var.pscloud_private_ext_subnets)
   vpc_id                  = aws_vpc.pslcoud-vpc.id
-  availability_zone       = var.pscloud_private_subnets[count.index].az
-  cidr_block              = var.pscloud_private_subnets[count.index].ip
+  availability_zone       = var.pscloud_private_ext_subnets[count.index].az
+  cidr_block              = var.pscloud_private_ext_subnets[count.index].ip
 
   tags = {
     Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}"
@@ -72,10 +72,10 @@ resource "aws_subnet" "pscloud-private-ext" {
 }
 
 resource "aws_subnet" "pscloud-public-ext" {
-  count                   = length(var.pscloud_public_subnets)
+  count                   = length(var.pscloud_public_ext_subnets)
   vpc_id                  = aws_vpc.pslcoud-vpc.id
-  availability_zone       = var.pscloud_public_subnets[count.index].az
-  cidr_block              = var.pscloud_public_subnets[count.index].ip
+  availability_zone       = var.pscloud_public_ext_subnets[count.index].az
+  cidr_block              = var.pscloud_public_ext_subnets[count.index].ip
 
   tags = {
     Name = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}"
