@@ -12,6 +12,7 @@ variable "pscloud_private_ext_subnets" {
     az      = string
     ip      = string
   }))
+  default = []
 }
 
 variable "pscloud_public_ext_subnets" {
@@ -19,4 +20,5 @@ variable "pscloud_public_ext_subnets" {
     az      = string
     ip      = string
   }))
+  default = []
 }

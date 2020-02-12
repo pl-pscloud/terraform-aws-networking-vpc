@@ -2,6 +2,10 @@ output "pscloud_vpc" {
   value = aws_vpc.pslcoud-vpc
 }
 
+output "pscloud_vpc_id" {
+  value = aws_vpc.pslcoud-vpc.id
+}
+
 output "pscloud_public_subnets_ids" {
   value = aws_subnet.pscloud-public
 }
