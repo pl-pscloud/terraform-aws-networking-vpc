@@ -5,6 +5,7 @@ resource "aws_vpc" "pslcoud-vpc" {
 
   tags = {
     Name = "${var.pscloud_company}_vpc_${var.pscloud_env}"
+    Project = var.pscloud_project
   }
 }
 
@@ -13,6 +14,7 @@ resource "aws_internet_gateway" "pscloud-gw" {
 
   tags = {
     Name = "${var.pscloud_company}_gw_${var.pscloud_env}"
+    Project = var.pscloud_project
   }
 }
 
@@ -45,6 +47,7 @@ resource "aws_subnet" "pscloud-private" {
 
   tags = {
     Name = "${var.pscloud_company}_subnet_${count.index}_private_${var.pscloud_env}"
+    Project = "Default AZs"
   }
 }
 
@@ -57,6 +60,7 @@ resource "aws_subnet" "pscloud-public" {
 
   tags = {
     Name = "${var.pscloud_company}_subnet_${count.index}_public_${var.pscloud_env}"
+    Project = "Default AZs"
   }
 }
 
@@ -68,6 +72,7 @@ resource "aws_subnet" "pscloud-private-ext" {
 
   tags = {
     Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}"
+    Project = var.pscloud_private_ext_subnets[count.index].project
   }
 }
 
@@ -79,6 +84,7 @@ resource "aws_subnet" "pscloud-public-ext" {
 
   tags = {
     Name = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}"
+    Project = var.pscloud_public_ext_subnets[count.index].project
   }
 }
 

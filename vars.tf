@@ -1,5 +1,6 @@
 variable "pscloud_env" {}
 variable "pscloud_company" {}
+variable "pscloud_project" { default = "Default"}
 variable "pscloud_cidr_block" {}
 
 //if set pscloud_az then will one privaye and one public subnet per available
@@ -11,6 +12,7 @@ variable "pscloud_private_ext_subnets" {
   type = list(object({
     az      = string
     ip      = string
+    project = string
   }))
   default = []
 }
@@ -19,6 +21,7 @@ variable "pscloud_public_ext_subnets" {
   type = list(object({
     az      = string
     ip      = string
+    project = string
   }))
   default = []
 }
