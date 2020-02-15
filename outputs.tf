@@ -25,3 +25,7 @@ output "pscloud_private_ext_subnets_ids" {
 output "pscloud_rds_subnet_group" {
   value = aws_db_subnet_group.pscloud-rds-subnet-group
 }
+
+output "pscloud_gatwey_id" {
+  value = aws_internet_gateway.pscloud-gw.id
+}
