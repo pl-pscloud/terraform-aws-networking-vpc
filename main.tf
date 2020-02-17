@@ -27,7 +27,7 @@ resource "aws_route_table" "pscloud-rt-public" {
   }
 
   tags = {
-    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}_lower(${var.pscloud_project})"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_route_table" "pscloud-rt-private" {
   vpc_id = aws_vpc.pslcoud-vpc.id
 
   tags = {
-    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}_lower(${var.pscloud_project})"
   }
 }
 
@@ -83,8 +83,8 @@ resource "aws_subnet" "pscloud-public-ext" {
   cidr_block              = var.pscloud_public_ext_subnets[count.index].ip
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}"
-    Project = var.pscloud_public_ext_subnets[count.index].project
+    Name                  = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}"
+    Project               = var.pscloud_public_ext_subnets[count.index].project
   }
 }
 
@@ -119,7 +119,7 @@ resource "aws_route_table_association" "assoc-public-ext" {
   subnet_id               = element(aws_subnet.pscloud-public-ext, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-public.id
 
-  depends_on = [aws_subnet.pscloud-public-ext]
+  depends_on              = [aws_subnet.pscloud-public-ext]
 }
 
 resource "aws_route_table_association" "assoc-private-ext" {
@@ -127,5 +127,5 @@ resource "aws_route_table_association" "assoc-private-ext" {
   subnet_id               = element(aws_subnet.pscloud-private-ext, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-private.id
 
-  depends_on = [aws_subnet.pscloud-private-ext]
+  depends_on              = [aws_subnet.pscloud-private-ext]
 }
