@@ -103,19 +103,19 @@ resource "aws_db_subnet_group" "pscloud-rds-subnet-group" {
 }
 
 resource "aws_route_table_association" "assoc-public" {
-  count                   = length(aws_subnet.pscloud-public)
+  count                   = length(var.pscloud_az)
   subnet_id               = element(aws_subnet.pscloud-public, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-public.id
 }
 
 resource "aws_route_table_association" "assoc-private" {
-  count                   = length(aws_subnet.pscloud-private)
+  count                   = length(var.pscloud_az)
   subnet_id               = element(aws_subnet.pscloud-private, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-private.id
 }
 
 resource "aws_route_table_association" "assoc-public-ext" {
-  count                   = length(aws_subnet.pscloud-public-ext)
+  count                   = length(var.pscloud_public_ext_subnets)
   subnet_id               = element(aws_subnet.pscloud-public-ext, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-public.id
 
@@ -123,7 +123,7 @@ resource "aws_route_table_association" "assoc-public-ext" {
 }
 
 resource "aws_route_table_association" "assoc-private-ext" {
-  count                   = length(aws_subnet.pscloud-private-ext)
+  count                   = length(var.pscloud_private_ext_subnets)
   subnet_id               = element(aws_subnet.pscloud-private-ext, count.index).id
   route_table_id          = aws_route_table.pscloud-rt-private.id
 
