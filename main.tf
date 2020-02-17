@@ -19,6 +19,8 @@ resource "aws_internet_gateway" "pscloud-gw" {
 }
 
 resource "aws_route_table" "pscloud-rt-public" {
+  count         = (length(var.pscloud_az) > 0) ? 1 : 0
+
   vpc_id = aws_vpc.pslcoud-vpc.id
 
   route {
@@ -27,15 +29,40 @@ resource "aws_route_table" "pscloud-rt-public" {
   }
 
   tags = {
-    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}_lower(${var.pscloud_project})"
+    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}"
   }
 }
 
 resource "aws_route_table" "pscloud-rt-private" {
-  vpc_id = aws_vpc.pslcoud-vpc.id
+  count         = (length(var.pscloud_az) > 0) ? 1 : 0
+  vpc_id        = aws_vpc.pslcoud-vpc.id
 
   tags = {
-    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}_lower(${var.pscloud_project})"
+    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}"
+  }
+}
+
+resource "aws_route_table" "pscloud-rt-public-ext" {
+  count         = (length(var.pscloud_public_ext_subnets) > 0) ? 1 : 0
+
+  vpc_id = aws_vpc.pslcoud-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.pscloud-gw.id
+  }
+
+  tags = {
+    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}"
+  }
+}
+
+resource "aws_route_table" "pscloud-rt-private-ext" {
+  count         = (length(var.pscloud_private_ext_subnets) > 0) ? 1 : 0
+  vpc_id        = aws_vpc.pslcoud-vpc.id
+
+  tags = {
+    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}"
   }
 }
 
@@ -117,7 +144,7 @@ resource "aws_route_table_association" "assoc-private" {
 resource "aws_route_table_association" "assoc-public-ext" {
   count                   = length(var.pscloud_public_ext_subnets)
   subnet_id               = element(aws_subnet.pscloud-public-ext, count.index).id
-  route_table_id          = aws_route_table.pscloud-rt-public.id
+  route_table_id          = aws_route_table.pscloud-rt-public-ext.id
 
   depends_on              = [aws_subnet.pscloud-public-ext]
 }
@@ -125,7 +152,7 @@ resource "aws_route_table_association" "assoc-public-ext" {
 resource "aws_route_table_association" "assoc-private-ext" {
   count                   = length(var.pscloud_private_ext_subnets)
   subnet_id               = element(aws_subnet.pscloud-private-ext, count.index).id
-  route_table_id          = aws_route_table.pscloud-rt-private.id
+  route_table_id          = aws_route_table.pscloud-rt-private-ext.id
 
   depends_on              = [aws_subnet.pscloud-private-ext]
 }
