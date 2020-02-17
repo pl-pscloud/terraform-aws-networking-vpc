@@ -118,6 +118,7 @@ resource "aws_subnet" "pscloud-public-ext" {
 
 resource "aws_db_subnet_group" "pscloud-rds-subnet-group" {
   count                   = length(var.pscloud_az) > 0 ? 1 : 0
+
   name                    = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
   subnet_ids = [
     for as in aws_subnet.pscloud-private :
@@ -144,7 +145,7 @@ resource "aws_route_table_association" "assoc-private" {
 resource "aws_route_table_association" "assoc-public-ext" {
   count                   = length(var.pscloud_public_ext_subnets)
   subnet_id               = element(aws_subnet.pscloud-public-ext, count.index).id
-  route_table_id          = aws_route_table.pscloud-rt-public-ext.id
+  route_table_id          = aws_route_table.pscloud-rt-public-ext[0].id
 
   depends_on              = [aws_subnet.pscloud-public-ext]
 }
@@ -152,7 +153,7 @@ resource "aws_route_table_association" "assoc-public-ext" {
 resource "aws_route_table_association" "assoc-private-ext" {
   count                   = length(var.pscloud_private_ext_subnets)
   subnet_id               = element(aws_subnet.pscloud-private-ext, count.index).id
-  route_table_id          = aws_route_table.pscloud-rt-private-ext.id
+  route_table_id          = aws_route_table.pscloud-rt-private-ext[0].id
 
   depends_on              = [aws_subnet.pscloud-private-ext]
 }
