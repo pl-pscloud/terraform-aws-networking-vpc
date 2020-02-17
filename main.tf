@@ -133,13 +133,13 @@ resource "aws_db_subnet_group" "pscloud-rds-subnet-group" {
 resource "aws_route_table_association" "assoc-public" {
   count                   = length(var.pscloud_az)
   subnet_id               = element(aws_subnet.pscloud-public, count.index).id
-  route_table_id          = aws_route_table.pscloud-rt-public.id
+  route_table_id          = aws_route_table.pscloud-rt-public[0].id
 }
 
 resource "aws_route_table_association" "assoc-private" {
   count                   = length(var.pscloud_az)
   subnet_id               = element(aws_subnet.pscloud-private, count.index).id
-  route_table_id          = aws_route_table.pscloud-rt-private.id
+  route_table_id          = aws_route_table.pscloud-rt-private[0].id
 }
 
 resource "aws_route_table_association" "assoc-public-ext" {
