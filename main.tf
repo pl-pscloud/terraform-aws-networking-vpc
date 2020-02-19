@@ -119,7 +119,7 @@ resource "aws_subnet" "pscloud-public-ext" {
 resource "aws_db_subnet_group" "pscloud-rds-subnet-group" {
   count                   = length(var.pscloud_az) > 0 ? 1 : 0
 
-  name                    = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}_${var.pscloud_project}"
+  name                    = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
   subnet_ids = [
     for as in aws_subnet.pscloud-private :
     as.id
