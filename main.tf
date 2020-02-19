@@ -4,7 +4,7 @@ resource "aws_vpc" "pslcoud-vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.pscloud_company}_vpc_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_vpc_${var.pscloud_env}_${var.pscloud_project}"
     Project = var.pscloud_project
   }
 }
@@ -13,7 +13,7 @@ resource "aws_internet_gateway" "pscloud-gw" {
   vpc_id = aws_vpc.pslcoud-vpc.id
 
   tags = {
-    Name = "${var.pscloud_company}_gw_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_gw_${var.pscloud_env}_${var.pscloud_project}"
     Project = var.pscloud_project
   }
 }
@@ -29,7 +29,7 @@ resource "aws_route_table" "pscloud-rt-public" {
   }
 
   tags = {
-    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}_${var.pscloud_project}"
   }
 }
 
@@ -38,7 +38,7 @@ resource "aws_route_table" "pscloud-rt-private" {
   vpc_id        = aws_vpc.pslcoud-vpc.id
 
   tags = {
-    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}_${var.pscloud_project}"
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_route_table" "pscloud-rt-public-ext" {
   }
 
   tags = {
-    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_rt_public_${var.pscloud_env}_${var.pscloud_project}"
   }
 }
 
@@ -62,7 +62,7 @@ resource "aws_route_table" "pscloud-rt-private-ext" {
   vpc_id        = aws_vpc.pslcoud-vpc.id
 
   tags = {
-    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_rt_private_${var.pscloud_env}_${var.pscloud_project}"
   }
 }
 
@@ -73,7 +73,7 @@ resource "aws_subnet" "pscloud-private" {
   cidr_block        = "${var.pscloud_cidr_block}.1${count.index}.0/24"
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_private_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_subnet_${count.index}_private_${var.pscloud_env}_${var.pscloud_project}"
     Project = "Default AZs"
   }
 }
@@ -86,7 +86,7 @@ resource "aws_subnet" "pscloud-public" {
   map_public_ip_on_launch = "true"
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_public_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_subnet_${count.index}_public_${var.pscloud_env}_${var.pscloud_project}"
     Project = "Default AZs"
   }
 }
@@ -98,7 +98,7 @@ resource "aws_subnet" "pscloud-private-ext" {
   cidr_block              = var.pscloud_private_ext_subnets[count.index].ip
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}"
+    Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}_${var.pscloud_project}"
     Project = var.pscloud_private_ext_subnets[count.index].project
   }
 }
@@ -110,7 +110,7 @@ resource "aws_subnet" "pscloud-public-ext" {
   cidr_block              = var.pscloud_public_ext_subnets[count.index].ip
 
   tags = {
-    Name                  = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}"
+    Name                  = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}_${var.pscloud_project}"
     Project               = var.pscloud_public_ext_subnets[count.index].project
   }
 }
@@ -119,14 +119,14 @@ resource "aws_subnet" "pscloud-public-ext" {
 resource "aws_db_subnet_group" "pscloud-rds-subnet-group" {
   count                   = length(var.pscloud_az) > 0 ? 1 : 0
 
-  name                    = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
+  name                    = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}_${var.pscloud_project}"
   subnet_ids = [
     for as in aws_subnet.pscloud-private :
     as.id
   ]
 
   tags = {
-    Name                  = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}"
+    Name                  = "${var.pscloud_company}_rds_subnet_group_${var.pscloud_env}_${var.pscloud_project}"
   }
 }
 
