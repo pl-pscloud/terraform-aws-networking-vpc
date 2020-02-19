@@ -73,7 +73,7 @@ resource "aws_subnet" "pscloud-private" {
   cidr_block        = "${var.pscloud_cidr_block}.1${count.index}.0/24"
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_private_${var.pscloud_env}_${var.pscloud_project}"
+    Name = "${var.pscloud_company}_subnet_${count.index}_private_${var.pscloud_env}_${var.pscloud_project}_${var.pscloud_cidr_block}.${count.index}.0/24"
     Project = "Default AZs"
   }
 }
@@ -86,7 +86,7 @@ resource "aws_subnet" "pscloud-public" {
   map_public_ip_on_launch = "true"
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_public_${var.pscloud_env}_${var.pscloud_project}"
+    Name = "${var.pscloud_company}_subnet_${count.index}_public_${var.pscloud_env}_${var.pscloud_project}_${var.pscloud_cidr_block}.${count.index}.0/24"
     Project = "Default AZs"
   }
 }
@@ -98,7 +98,7 @@ resource "aws_subnet" "pscloud-private-ext" {
   cidr_block              = var.pscloud_private_ext_subnets[count.index].ip
 
   tags = {
-    Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}_${var.pscloud_project}"
+    Name = "${var.pscloud_company}_subnet_${count.index}_private_ext_${var.pscloud_env}_${var.pscloud_project}_${var.pscloud_private_ext_subnets[count.index].ip}"
     Project = var.pscloud_private_ext_subnets[count.index].project
   }
 }
@@ -110,7 +110,7 @@ resource "aws_subnet" "pscloud-public-ext" {
   cidr_block              = var.pscloud_public_ext_subnets[count.index].ip
 
   tags = {
-    Name                  = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}_${var.pscloud_project}"
+    Name                  = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}_${var.pscloud_project}_${var.pscloud_private_ext_subnets[count.index].ip}"
     Project               = var.pscloud_public_ext_subnets[count.index].project
   }
 }
