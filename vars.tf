@@ -25,3 +25,6 @@ variable "pscloud_public_ext_subnets" {
   }))
   default = []
 }
+
+variable "pscloud_nat_gw" { default = false }
+variable "pscloud_nat_gw_subnet_id" { default = "" }

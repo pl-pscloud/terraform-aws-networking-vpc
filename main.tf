@@ -157,3 +157,23 @@ resource "aws_route_table_association" "assoc-private-ext" {
 
   depends_on              = [aws_subnet.pscloud-private-ext]
 }
+
+resource "aws_eip" "pscloud-eip-nat-gw" {
+  count = (var.pscloud_nat_gw == true ? 1 : 0)
+  vpc   = true
+
+  tags = {
+    Name = "${var.pscloud_company}_eip_nat_gw_${var.pscloud_env}_${var.pscloud_project}"
+  }
+}
+
+resource "aws_nat_gateway" "pscloud-nat-gw" {
+  count = (var.pscloud_nat_gw == true ? 1 : 0)
+
+  allocation_id = aws_eip.pscloud-eip-nat-gw[0].allocation_id
+  subnet_id     = var.pscloud_nat_gw_subnet_id
+
+  tags = {
+    Name = "${var.pscloud_company}_nat_gw_${var.pscloud_env}_${var.pscloud_project}"
+  }
+}
