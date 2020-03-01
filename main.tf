@@ -170,10 +170,12 @@ resource "aws_eip" "pscloud-eip-nat-gw" {
 resource "aws_nat_gateway" "pscloud-nat-gw" {
   count = (var.pscloud_nat_gw == true ? 1 : 0)
 
-  allocation_id = aws_eip.pscloud-eip-nat-gw[0].allocation_id
+  allocation_id = aws_eip.pscloud-eip-nat-gw[0].id
   subnet_id     = var.pscloud_nat_gw_subnet_id
 
   tags = {
     Name = "${var.pscloud_company}_nat_gw_${var.pscloud_env}_${var.pscloud_project}"
   }
+
+  depends_on = [ aws_eip.pscloud-eip-nat-gw ]
 }
