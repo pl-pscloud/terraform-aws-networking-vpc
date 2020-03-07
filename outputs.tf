@@ -26,6 +26,10 @@ output "pscloud_rds_subnet_group" {
   value = aws_db_subnet_group.pscloud-rds-subnet-group
 }
 
-output "pscloud_gatwey_id" {
+output "pscloud_gateway_id" {
   value = aws_internet_gateway.pscloud-gw.id
+}
+
+output "pscloud_nat_gateway" {
+  value = aws_nat_gateway.pscloud-nat-gw
 }

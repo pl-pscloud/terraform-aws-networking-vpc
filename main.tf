@@ -108,6 +108,7 @@ resource "aws_subnet" "pscloud-public-ext" {
   vpc_id                  = aws_vpc.pslcoud-vpc.id
   availability_zone       = var.pscloud_public_ext_subnets[count.index].az
   cidr_block              = var.pscloud_public_ext_subnets[count.index].ip
+  map_public_ip_on_launch = "true"
 
   tags = {
     Name                  = "${var.pscloud_company}_subnet_${count.index}_public_ext_${var.pscloud_env}_${var.pscloud_project}_${var.pscloud_private_ext_subnets[count.index].ip}"
@@ -158,6 +159,48 @@ resource "aws_route_table_association" "assoc-private-ext" {
   depends_on              = [aws_subnet.pscloud-private-ext]
 }
 
+
+
+
+
+
+
+
+
+resource "aws_subnet" "pscloud-public-nat" {
+  count                   = (var.pscloud_nat_gw == true ? 1 : 0)
+  vpc_id                  = aws_vpc.pslcoud-vpc.id
+  availability_zone       = var.pscloud_nat_gw_subnet_az
+  cidr_block              = var.pscloud_nat_gw_subnet_cidr
+  map_public_ip_on_launch = "true"
+
+  tags = {
+    Name                  = "${var.pscloud_company}_subnet_public_nat_${var.pscloud_env}_${var.pscloud_project}_${var.pscloud_nat_gw_subnet_cidr}"
+    Project               = var.pscloud_project
+  }
+}
+
+resource "aws_route_table" "pscloud-rt-public-nat" {
+  count                   = (var.pscloud_nat_gw == true ? 1 : 0)
+
+  vpc_id = aws_vpc.pslcoud-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.pscloud-gw.id
+  }
+
+  tags = {
+    Name = "${var.pscloud_company}_rt_public_nat_${var.pscloud_env}_${var.pscloud_project}"
+  }
+}
+
+resource "aws_route_table_association" "assoc-public-nat" {
+  count                   = (var.pscloud_nat_gw == true ? 1 : 0)
+  subnet_id               = aws_subnet.pscloud-public-nat[0].id
+  route_table_id          = aws_route_table.pscloud-rt-public-nat[0].id
+}
+
 resource "aws_eip" "pscloud-eip-nat-gw" {
   count = (var.pscloud_nat_gw == true ? 1 : 0)
   vpc   = true
@@ -171,7 +214,7 @@ resource "aws_nat_gateway" "pscloud-nat-gw" {
   count = (var.pscloud_nat_gw == true ? 1 : 0)
 
   allocation_id = aws_eip.pscloud-eip-nat-gw[0].id
-  subnet_id     = var.pscloud_nat_gw_subnet_id
+  subnet_id     = aws_subnet.pscloud-public-nat[0].id
 
   tags = {
     Name = "${var.pscloud_company}_nat_gw_${var.pscloud_env}_${var.pscloud_project}"
