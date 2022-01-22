@@ -1,7 +1,9 @@
 variable "pscloud_env" {}
 variable "pscloud_company" {}
 variable "pscloud_project" { default = "Default"}
-variable "pscloud_cidr_block" {}
+variable "pscloud_easy_vpc" { default = true}
+variable "pscloud_cidr_block" { default = "" }
+variable "pscloud_cidr_block_easy" { default = "" }
 
 //if set pscloud_az then will one privaye and one public subnet per available
 //data "aws_availability_zones" "pscloud_az" { state = "available" }
